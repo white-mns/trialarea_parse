@@ -86,13 +86,8 @@ sub GetNameData{
     my $name = $$minieffect_nodes[0]->right->as_text;
 
     my $nickname = $$minieffect_nodes[1]->right;
-    $nickname =~ s/^　//;
-    $nickname =~ s/\s$//;
 
-    my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $name, $nickname);
-    $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, @datas));
-
-    $self->{CommonDatas}{NickName}{$nickname} = $self->{ENo};
+    $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $name, $nickname)));
 
     return;
 }
