@@ -71,37 +71,24 @@ sub Execute{
 
     my $start = 1;
     my $end   = 0;
-    my $directory = './data/utf/' . $self->{ResultNo0};
-    $directory .= ($self->{GenerateNo} == 0) ? '' :  '_' . $self->{GenerateNo};
-    $directory .= '/RESULT';
+    my $directory = './data/utf/result' . $self->{ResultNo} . '/';
+    
     if (ConstData::EXE_ALLRESULT) {
         #結果全解析
-        my @file_list = grep { -f } glob("$directory/c*.html");
-        my $i = 0;
-        foreach my $file_adr (@file_list) {
-            if ($file_adr =~ /catalog/) {next};
-            $i++;
-            if ($i % 10 == 0) {print $i . "\n"};
-
-            $file_adr =~ /c(.*?)\.html/;
-            my $file_name = $1;
-            my $e_no = $file_name+0;
-            
-            $self->ParsePage($directory  . "/c" . $file_name . ".html", $e_no);
-        }
+        $end = GetMaxFileNo($directory,"prefix");
     }else{
         #指定範囲解析
         $start = ConstData::FLAGMENT_START;
         $end   = ConstData::FLAGMENT_END;
-        print "$start to $end\n";
-
-        for(my $i=$start; $i<=$end; $i++) {
-            if ($i % 10 == 0) {print $i . "\n"};
-            my $i0 = sprintf ("%04d", $i);
-            $self->ParsePage($directory  . "/c" . $i0 . ".html",$i);
-        }
     }
 
+    print "$start to $end\n";
+
+    for (my $e_no=$start; $e_no<=$end; $e_no++) {
+        if ($e_no % 10 == 0) {print $e_no . "\n"};
+
+        $self->ParsePage($directory."/prefix".$e_no.".html",$e_no);
+    }
     
     return ;
 }
@@ -128,12 +115,10 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $player_nodes           = &GetNode::GetNode_Tag_Attr("h2",    "id",    "player", \$tree);
-    my $charadata_node         = $$player_nodes[0]->right;
-    my $minieffect_nodes       = &GetNode::GetNode_Tag_Attr("div",   "class", "minieffect", \$charadata_node);
+    my $name_nodes = &GetNode::GetNode_Tag_Attr("h2", "id", "name", \$tree);
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name}))         {$self->{DataHandlers}{Name}->GetData        ($e_no, $minieffect_nodes)};
+    if (exists($self->{DataHandlers}{Name})) {$self->{DataHandlers}{Name}->GetData($e_no, $name_nodes)};
 
     $tree = $tree->delete;
 }
@@ -144,7 +129,7 @@ sub ParsePage{
 #    引数｜ディレクトリ名
 #    　　　ファイル接頭辞
 ##-----------------------------------#
-sub GetFileNo{
+sub GetMaxFileNo{
     my $directory   = shift;
     my $prefix    = shift;
 
