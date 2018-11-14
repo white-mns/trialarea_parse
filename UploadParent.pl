@@ -29,9 +29,6 @@ $timeChecker->CheckTime("end    \t");
 $timeChecker->OutputTime();
 $timeChecker = undef;
 
-
-
-
 # 宣言部    ---------------------------#
 
 sub Main {
@@ -47,18 +44,47 @@ sub Main {
     $upload->DBConnect();
     
     if (ConstData::EXE_DATA) {
-        if (ConstData::EXE_DATA_PROPER_NAME) {
-            $upload->DeleteAll('proper_names');
-            $upload->Upload("./output/data/proper_name.csv", 'proper_names');
-        }
+        &UploadData($upload, ConstData::EXE_DATA_PROPER_NAME, "proper_names", "./output/data/proper_name.csv");
     }
     if (ConstData::EXE_CHARA) {
-        if (ConstData::EXE_CHARA_NAME) {
-            $upload->DeleteSameResult('names', $result_no, $generate_no);
-            $upload->Upload("./output/chara/name_" . $result_no . "_" . $generate_no . ".csv", 'names');
-        }
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME, "names", "./output/chara/name_");
     }
     print "result_no:$result_no,generate_no:$generate_no\n";
     return;
 }
 
+#-----------------------------------#
+#       結果番号に依らないデータをアップロード
+#-----------------------------------#
+#    引数｜アップロードオブジェクト
+#    　　　アップロード定義
+#          テーブル名
+#          ファイル名
+##-----------------------------------#
+sub UploadData {
+    my ($upload, $is_upload, $table_name, $file_name) = @_;
+
+    if ($is_upload) {
+        $upload->DeleteAll($table_name);
+        $upload->Upload($file_name, $table_name);
+    }
+}
+
+#-----------------------------------#
+#       更新結果データをアップロード
+#-----------------------------------#
+#    引数｜アップロードオブジェクト
+#    　　　更新番号
+#    　　　再更新番号
+#    　　　アップロード定義
+#          テーブル名
+#          ファイル名
+##-----------------------------------#
+sub UploadResult {
+    my ($upload, $result_no, $generate_no, $is_upload, $table_name, $file_name) = @_;
+
+    if($is_upload) {
+        $upload->DeleteSameResult($table_name, $result_no, $generate_no);
+        $upload->Upload($file_name . $result_no . "_" . $generate_no . ".csv", $table_name);
+    }
+}
