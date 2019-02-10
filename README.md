@@ -11,7 +11,7 @@ masterブランチは各定期更新ゲームのデータ形式に対応する�
 以下の環境での動作を確認しています  
   
 OS:CentOS release 6.5 (Final)  
-DB:MySQL 5.5
+DB:MySQL 8.0.13  
 Perl:5.10.1  
 
 ## 必要なもの
