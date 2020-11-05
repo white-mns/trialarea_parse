@@ -15,9 +15,13 @@ require "./source/Character.pm";
 use strict;
 use warnings;
 use HTML::TreeBuilder;
-use ConstData;        #定数呼び出し
 
 # 変数の初期化    ---------------#
+use FindBin qw($Bin);
+use lib "$Bin";
+use ConstData;        #定数呼び出し
+
+# インスタンスの初期化    ---------------#
 
 my $timeChecker = TimeChecker->new();
 
