@@ -20,7 +20,7 @@ bashが使えるLinux環境。（Windowsで処理を行う場合、execute.shの
 perlが使える環境  
 デフォルトで入ってないモジュールを使ってるので、
 
-    cpan DateTime
+    cpan HTML::TreeBuilder
 
 みたいにCPAN等を使ってDateTimeやHTML::TreeBuilderといった足りないモジュールをインストールしてください。
 
