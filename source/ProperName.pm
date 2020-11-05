@@ -15,7 +15,6 @@ use source::lib::GetNode;
 
 require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
-require "./source/lib/NumCode.pm";
 
 require "./source/data/StoreProperName.pm";
 

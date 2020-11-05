@@ -7,7 +7,6 @@
 # モジュール呼び出し    ---------------#
 require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
-require "./source/lib/NumCode.pm";
 require "./source/ProperName.pm";
 require "./source/Character.pm";
 
