@@ -40,8 +40,8 @@ sub Main {
     my $generate_no = $ARGV[1];
     my $upload = Upload->new();
 
-    if (!defined($result_no) || !defined($generate_no)) {
-        print "error:empty result_no or generate_no";
+    if (!defined($result_no) || !defined($generate_no) || $result_no !~ /^[0-9]+$/ || $generate_no !~ /^[0-9]+$/) {
+        print "Error:Unusual ResultNo or GenerateNo\n";
         return;
     }
 

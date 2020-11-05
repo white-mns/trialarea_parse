@@ -38,14 +38,14 @@ $timeChecker = undef;
 
 # 宣言部    ---------------------------#
 
-#-----------------------------------#
-#
-#        main
-#
-#-----------------------------------#
 sub Main{
     my $result_no   = $ARGV[0];
     my $generate_no = $ARGV[1];
+
+    if (!defined($result_no) || !defined($generate_no) || $result_no !~ /^[0-9]+$/ || $generate_no !~ /^[0-9]+$/) {
+        print "Error:Unusual ResultNo or GenerateNo\n";
+        return;
+    }
 
     my @objects;      #探索するデータ項目の登録
     my %common_datas;
