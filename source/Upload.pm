@@ -207,9 +207,7 @@ sub DBConnect {
         dsn      => DbSetting::DSN,
         user     => DbSetting::USER,
         password => DbSetting::PASS,
-        option   => {mysql_enable_utf8        => 1,
-                     mysql_read_default_file  => "/etc/my.cnf",
-                     mysql_read_default_group => "libmysqlclient"},
+        option   => {mysql_enable_utf8 => 1},
     ) or die "cannot connect to MySQL: $self->{DBI}::errstr";
     
     return;
