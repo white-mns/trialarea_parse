@@ -78,6 +78,7 @@ sub Upload {
                 @data_que =();
             }            
         }
+
         &InsertDB($self,\@data_que,$for_table);
     }
     
@@ -115,7 +116,6 @@ sub GetMinimum{
 
 }
 
-
 #-----------------------------------#
 #
 #        データの挿入
@@ -126,25 +126,22 @@ sub InsertDB{
     my $insert_data = shift;
     my $table_name  = shift;
     
-    eval {
-        $self->{DBI}->insert($insert_data, table     => $table_name);
-    };
+    if (!scalar(@$insert_data)) {return;}
+    
+    $self->{DBI}->insert($insert_data, table => $table_name, bulk_insert => 1);
+
     if ( $@ ){
         if ( DBI::errstr &&  DBI::errstr =~ "for key 'PRIMARY'" ){
             my $errMes = "[一意制約]\n";
-            from_to($errMes, 'UTF8', 'cp932');
             print $errMes;
         } else {
             my $errMes = "$@";
-            from_to($errMes, 'UTF8', 'cp932');
             die $errMes;
         }
     }
     
     return;
 }
-
-
 
 #-----------------------------------#
 #
@@ -177,11 +174,12 @@ sub DeleteSameDate{
         );
     return;
 }
+
 #-----------------------------------#
-##
-##               同じ更新回のデータを削除する
-##
-##-----------------------------------#
+#
+#    同じ更新回のデータを削除する
+#
+#-----------------------------------#
 sub DeleteSameResult{
     my $self        = shift;
     my $table_name  = shift;
