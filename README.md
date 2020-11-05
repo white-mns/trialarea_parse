@@ -1,8 +1,8 @@
-# 定期更新ゲーム過去結果データ小屋　解析プログラム
-定期更新ゲーム過去結果データ小屋は各種定期更新ゲームの過去結果を解析して得られるデータを扱った情報サイトです。  
+# 定期更新ゲームデータ小屋　解析プログラム
+定期更新ゲームデータ小屋は各種定期更新ゲームを解析して得られるデータを扱った情報サイトです。  
 masterブランチは各定期更新ゲームのデータ形式に対応する前の雛形の状態です。  
 実際に運用されいているコードを見る場合は各branchを閲覧ください。   
-データ小屋の表示部分については[別リポジトリ](https://github.com/white-mns/teiki_archive_rails)を参照ください。
+データ小屋の表示部分については[別リポジトリ](https://github.com/white-mns/data_teiki_rails)を参照ください。
 
 # サイト
 雛形用ブランチのため、masterブランチのコードで動いているサイトはありません。 
@@ -48,7 +48,7 @@ perlが使える環境
 
 ## DB設定
 `source/DbSetting.pm`にサーバーの設定を記述します。  
-DBのテーブルは[Railsアプリ側](https://github.com/white-mns/teiki_archive_rails)で`rake db:migrate`して作成しています。
+DBのテーブルは[Railsアプリ側](https://github.com/white-mns/data_teiki_rails)で`rake db:migrate`して作成しています。
 
 ## 中間ファイル
 DBにアップロードしない場合、固有名詞を数字で置き換えている箇所があるため、csvファイルを読むのは難しいと思います。
