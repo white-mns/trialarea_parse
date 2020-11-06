@@ -51,6 +51,7 @@ sub Main {
 
     if (ConstData::EXE_DATA) {
         &UploadData($upload, ConstData::EXE_DATA_PROPER_NAME, "proper_names", "./output/data/proper_name.csv");
+        &UploadSkill($upload, $result_no, ConstData::EXE_DATA_SKILL_LIST, "skill_lists", "./output/data/skill_list_");
     }
     if (ConstData::EXE_CHARA) {
         &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_NAME, "names", "./output/chara/name_");
@@ -74,6 +75,24 @@ sub UploadData {
     if ($is_upload) {
         $upload->DeleteAll($table_name);
         $upload->Upload($file_name, $table_name);
+    }
+}
+
+#-----------------------------------#
+#       スキルデータをアップロード
+#-----------------------------------#
+#    引数｜アップロードオブジェクト
+#    　　　更新番号
+#    　　　アップロード定義
+#          テーブル名
+#          ファイル名
+##-----------------------------------#
+sub UploadSkill {
+    my ($upload, $result_no, $is_upload, $table_name, $file_name) = @_;
+
+    if($is_upload) {
+        $upload->DeleteSameResult($table_name, $result_no);
+        $upload->Upload($file_name . $result_no . ".csv", $table_name);
     }
 }
 
