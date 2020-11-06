@@ -38,11 +38,11 @@ $timeChecker = undef;
 # 宣言部    ---------------------------#
 
 sub Main{
-    my $result_no   = $ARGV[0];
-    my $generate_no = $ARGV[1];
+    my $result_no = $ARGV[0];
+    my $round_no  = $ARGV[1];
 
-    if (!defined($result_no) || !defined($generate_no) || $result_no !~ /^[0-9]+$/ || $generate_no !~ /^[0-9]+$/) {
-        print "Error:Unusual ResultNo or GenerateNo\n";
+    if (!defined($result_no) || !defined($round_no) || $result_no !~ /^[0-9]+$/ || $round_no !~ /^[0-9]+$/) {
+        print "Error:Unusual ResultNo or RoundNo\n";
         return;
     }
 
@@ -52,7 +52,7 @@ sub Main{
     push(@objects, ProperName->new()); #固有名詞読み込み・保持
     if (ConstData::EXE_CHARA)     { push(@objects, Character->new()); }     # キャラページ読み込み
 
-    &Init(\@objects, $result_no, $generate_no, \%common_datas);
+    &Init(\@objects, $result_no, $round_no, \%common_datas);
     &Execute(\@objects);
     &Output(\@objects);
 }
@@ -63,10 +63,10 @@ sub Main{
 #    引数｜更新番号、再更新番号
 #-----------------------------------#
 sub Init{
-    my ($objects, $result_no, $generate_no, $common_datas)    = @_;
+    my ($objects, $result_no, $round_no, $common_datas)    = @_;
     
     foreach my $object( @$objects) {
-        $object->Init($result_no, $generate_no, $common_datas);
+        $object->Init($result_no, $round_no, $common_datas);
     }
     return;
 }

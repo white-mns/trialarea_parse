@@ -35,7 +35,7 @@ sub new {
 #-----------------------------------#
 sub Init(){
     my $self = shift;
-    ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
+    ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
 
     $self->{CommonDatas}{NickName} = {};
     
@@ -45,49 +45,76 @@ sub Init(){
    
     $header_list = [
                 "result_no",
-                "generate_no",
-                "e_no",
+                "round_no",
+                "player_id",
+                "link_no",
                 "name",
-                "nickname",
+                "player",
     ];
 
     $self->{Datas}{Data}->Init($header_list);
     
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/chara/name_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Data}->SetOutputName( "./output/chara/name_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
     return;
 }
 
 #-----------------------------------#
 #    データ取得
 #------------------------------------
-#    引数｜e_no,名前データノード
+#    引数｜リンクノード
 #-----------------------------------#
 sub GetData{
     my $self = shift;
-    my $e_no  = shift;
-    my $minieffect_nodes = shift;
-    
-    $self->{ENo} = $e_no;
+    my $a_nodes = shift;
 
-    $self->GetNameData($minieffect_nodes);
-    
+    $self->CrawlLinkNode($a_nodes);
+
     return;
 }
+
+#-----------------------------------#
+#    リンクノードの走査
+#------------------------------------
+#    引数｜リンクノード
+#-----------------------------------#
+sub CrawlLinkNode{
+    my $self  = shift;
+    my $a_nodes  = shift;
+
+    foreach my $a_node ( @$a_nodes) {
+        if ($a_node->attr("name") && $a_node->attr("name") =~ /^[0-9]+$/) {
+            $self->GetNameData($a_node);
+        }
+    }
+
+    return;
+}
+
 #-----------------------------------#
 #    名前データ取得
 #------------------------------------
-#    引数｜名前データノード
+#    引数｜リンクノード
 #-----------------------------------#
 sub GetNameData{
     my $self  = shift;
-    my $minieffect_nodes  = shift;
+    my $a_node  = shift;
+    my ($player_id, $link_no, $name, $player) = (0, 0, "", "");
 
-    my $name = $$minieffect_nodes[0]->right->as_text;
+    my @right_childrens = $a_node->right->content_list;
 
-    my $nickname = $$minieffect_nodes[1]->right;
+    $link_no = $a_node->attr("name");
+    $name =  $right_childrens[1]->as_text;
+    $player =  $right_childrens[2]->as_text;
+    $player =~ s/プレイヤー：//g;
 
-    $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $name, $nickname)));
+    if ($player =~ / \[(\d+)\]/) {
+        $player_id = $1;
+        $player =~ s/ \[\d+\]//g;
+    }
+
+    $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $player_id, $link_no, $name, $player)));
+
 
     return;
 }
