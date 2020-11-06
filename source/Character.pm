@@ -17,6 +17,7 @@ require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
 
 require "./source/chara/Name.pm";
+require "./source/chara/Skill.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -47,7 +48,8 @@ sub Init() {
     $self->{ResultAddrNo} = $self->{ResultNo} + 1;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)          { $self->{DataHandlers}{Name}         = Name->new();}
+    if (ConstData::EXE_CHARA_NAME)  { $self->{DataHandlers}{Name}  = Name->new();}
+    if (ConstData::EXE_CHARA_SKILL) { $self->{DataHandlers}{Skill} = Skill->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -98,7 +100,8 @@ sub ParsePage{
     my $a_nodes = &GetNode::GetNode_Tag("a", \$tree);
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name})) {$self->{DataHandlers}{Name}->GetData($a_nodes)};
+    if (exists($self->{DataHandlers}{Name}))  {$self->{DataHandlers}{Name}->GetData($a_nodes)};
+    if (exists($self->{DataHandlers}{Skill})) {$self->{DataHandlers}{Skill}->GetData($a_nodes)};
 
     $tree = $tree->delete;
 }

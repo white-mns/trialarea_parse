@@ -54,7 +54,8 @@ sub Main {
         &UploadSkill($upload, $result_no, ConstData::EXE_DATA_SKILL_LIST, "skill_lists", "./output/data/skill_list_");
     }
     if (ConstData::EXE_CHARA) {
-        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_NAME, "names", "./output/chara/name_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_NAME,  "names", "./output/chara/name_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_SKILL, "skills", "./output/chara/skill_");
     }
         &UploadResult($upload, $result_no, $round_no, 1,                      "uploaded_checks",     "./output/etc/uploaded_check_");
     print "result_no:$result_no,round_no:$round_no\n";

@@ -21,6 +21,7 @@ use warnings;
         use constant EXE_DATA_PROPER_NAME => 1;
         use constant EXE_DATA_SKILL_LIST  => 1;
     use constant EXE_CHARA      => 1;
-        use constant EXE_CHARA_NAME               => 1;
+        use constant EXE_CHARA_NAME       => 1;
+        use constant EXE_CHARA_SKILL      => 1;
 
 1;
