@@ -91,7 +91,7 @@ sub UploadResult {
     my ($upload, $result_no, $round_no, $is_upload, $table_name, $file_name) = @_;
 
     if($is_upload) {
-        $upload->DeleteSameResult($table_name, $result_no, $round_no);
+        $upload->DeleteSameRound($table_name, $result_no, $round_no);
         $upload->Upload($file_name . $result_no . "_" . $round_no . ".csv", $table_name);
     }
 }
