@@ -26,8 +26,7 @@ fi
 #------------------------------------------------------------------
 
 # 解析処理の実行
-perl ./GetData.pl $RESULT_NO $ROUND_NO $GENERATE_NO
-perl ./UploadParent.pl $RESULT_NO $ROUND_NO $GENERATE_NO
-
+perl ./GetData.pl $RESULT_NO $ROUND_NO
+perl ./UploadParent.pl $RESULT_NO $ROUND_NO
 
 cd $CURRENT  #元のディレクトリに戻る
