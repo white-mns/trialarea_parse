@@ -101,11 +101,11 @@ sub GetNameData{
     my $a_node  = shift;
     my ($player_id, $link_no, $name, $player) = (0, 0, "", "");
 
-    my @right_childrens = $a_node->right->content_list;
+    my @right_children = $a_node->right->content_list;
 
     $link_no = $a_node->attr("name");
-    $name =  $right_childrens[1]->as_text;
-    $player =  $right_childrens[2]->as_text;
+    $name =  $right_children[1]->as_text;
+    $player =  $right_children[2]->as_text;
     $player =~ s/プレイヤー：//g;
 
     if ($player =~ / \[(\d+)\]/) {
