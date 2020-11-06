@@ -37,11 +37,11 @@ $timeChecker = undef;
 
 sub Main {
     my $result_no = $ARGV[0];
-    my $generate_no = $ARGV[1];
+    my $round_no = $ARGV[1];
     my $upload = Upload->new();
 
-    if (!defined($result_no) || !defined($generate_no) || $result_no !~ /^[0-9]+$/ || $generate_no !~ /^[0-9]+$/) {
-        print "Error:Unusual ResultNo or GenerateNo\n";
+    if (!defined($result_no) || !defined($round_no) || $result_no !~ /^[0-9]+$/ || $round_no !~ /^[0-9]+$/) {
+        print "Error:Unusual ResultNo or RoundNo\n";
         return;
     }
 
@@ -51,9 +51,9 @@ sub Main {
         &UploadData($upload, ConstData::EXE_DATA_PROPER_NAME, "proper_names", "./output/data/proper_name.csv");
     }
     if (ConstData::EXE_CHARA) {
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME, "names", "./output/chara/name_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_NAME, "names", "./output/chara/name_");
     }
-    print "result_no:$result_no,generate_no:$generate_no\n";
+    print "result_no:$result_no,round_no:$round_no\n";
     return;
 }
 
@@ -85,10 +85,10 @@ sub UploadData {
 #          ファイル名
 ##-----------------------------------#
 sub UploadResult {
-    my ($upload, $result_no, $generate_no, $is_upload, $table_name, $file_name) = @_;
+    my ($upload, $result_no, $round_no, $is_upload, $table_name, $file_name) = @_;
 
     if($is_upload) {
-        $upload->DeleteSameResult($table_name, $result_no, $generate_no);
-        $upload->Upload($file_name . $result_no . "_" . $generate_no . ".csv", $table_name);
+        $upload->DeleteSameResult($table_name, $result_no, $round_no);
+        $upload->Upload($file_name . $result_no . "_" . $round_no . ".csv", $table_name);
     }
 }
