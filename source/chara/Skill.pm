@@ -37,10 +37,10 @@ sub Init(){
     my $self = shift;
     ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
 
-    $self->{CommonDatas}{NickSkill} = {};
-    
     #初期化
-    $self->{Datas}{Data}  = StoreData->new();
+    $self->{Datas}{Data}             = StoreData->new();
+    $self->{Datas}{SkillConcatenate} = StoreData->new();
+
     my $header_list = "";
    
     $header_list = [
@@ -51,9 +51,19 @@ sub Init(){
     ];
 
     $self->{Datas}{Data}->Init($header_list);
-    
+
+    $header_list = [
+                "result_no",
+                "round_no",
+                "link_no",
+                "skill_concatenate",
+    ];
+
+    $self->{Datas}{SkillConcatenate}->Init($header_list);
+
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/chara/skill_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
+    $self->{Datas}{Data}->SetOutputName            ( "./output/chara/skill_"             . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
+    $self->{Datas}{SkillConcatenate}->SetOutputName( "./output/chara/skill_concatenate_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
     return;
 }
 
@@ -104,14 +114,18 @@ sub GetSkillData{
     $link_no = $a_node->attr("name");
     
     my $span_tooltip_nodes = &GetNode::GetNode_Tag_Attr("span", "data-toggle", "tooltip", \$right_node);
+    my $skill_concatenate = ",";
 
     foreach my $span_tooltip_node (@$span_tooltip_nodes) {
         my $name = $span_tooltip_node->as_text;
         my $skill_id = $self->{CommonDatas}{SkillList}->GetOrAddId(0, [$name, $self->{ResultNo}, -1, -1, "", 0, 0, 0, 0, 0, 0, 0, 0]);
 
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_id)));
+
+        $skill_concatenate .= $name.",";
     }
 
+    $self->{Datas}{SkillConcatenate}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_concatenate)));
 
     return;
 }
