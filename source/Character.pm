@@ -17,6 +17,7 @@ require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
 
 require "./source/chara/Name.pm";
+require "./source/chara/Skill.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -43,15 +44,16 @@ sub new {
 #-----------------------------------#
 sub Init() {
     my $self = shift;
-    ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
-    $self->{ResultNo0} = sprintf ("%03d", $self->{ResultNo});
+    ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
+    $self->{ResultAddrNo} = $self->{ResultNo} + 1;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)          { $self->{DataHandlers}{Name}         = Name->new();}
+    if (ConstData::EXE_CHARA_NAME)  { $self->{DataHandlers}{Name}  = Name->new();}
+    if (ConstData::EXE_CHARA_SKILL) { $self->{DataHandlers}{Skill} = Skill->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
-        $object->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
+        $object->Init($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas});
     }
     
     return;
@@ -69,24 +71,9 @@ sub Execute{
 
     my $start = 1;
     my $end   = 0;
-    my $directory = './data/utf/result' . $self->{ResultNo} . '/';
+    my $directory = './data/orig/result_charalist/';
     
-    if (ConstData::EXE_ALLRESULT) {
-        #結果全解析
-        $end = GetMaxFileNo($directory,"prefix");
-    }else{
-        #指定範囲解析
-        $start = ConstData::FLAGMENT_START;
-        $end   = ConstData::FLAGMENT_END;
-    }
-
-    print "$start to $end\n";
-
-    for (my $e_no=$start; $e_no<=$end; $e_no++) {
-        if ($e_no % 10 == 0) {print $e_no . "\n"};
-
-        $self->ParsePage($directory."/prefix".$e_no.".html",$e_no);
-    }
+    $self->ParsePage($directory . $self->{ResultAddrNo} . '_' . $self->{RoundNo} . ".html");
     
     return ;
 }
@@ -99,24 +86,22 @@ sub Execute{
 sub ParsePage{
     my $self        = shift;
     my $file_name   = shift;
-    my $e_no        = shift;
 
     #結果の読み込み
     my $content = "";
-    $content = &IO::FileRead($file_name);
+    $content = &IO::GzipRead($file_name);
 
     if (!$content) { return;}
 
-    $content = &NumCode::EncodeEscape($content);
-        
     #スクレイピング準備
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $name_nodes = &GetNode::GetNode_Tag_Attr("h2", "id", "name", \$tree);
+    my $a_nodes = &GetNode::GetNode_Tag("a", \$tree);
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name})) {$self->{DataHandlers}{Name}->GetData($e_no, $name_nodes)};
+    if (exists($self->{DataHandlers}{Name}))  {$self->{DataHandlers}{Name}->GetData($a_nodes)};
+    if (exists($self->{DataHandlers}{Skill})) {$self->{DataHandlers}{Skill}->GetData($a_nodes)};
 
     $tree = $tree->delete;
 }

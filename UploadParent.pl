@@ -37,23 +37,29 @@ $timeChecker = undef;
 
 sub Main {
     my $result_no = $ARGV[0];
-    my $generate_no = $ARGV[1];
+    my $round_no = $ARGV[1];
     my $upload = Upload->new();
 
-    if (!defined($result_no) || !defined($generate_no) || $result_no !~ /^[0-9]+$/ || $generate_no !~ /^[0-9]+$/) {
-        print "Error:Unusual ResultNo or GenerateNo\n";
+    if (!defined($result_no) || !defined($round_no) || $result_no !~ /^[0-9]+$/ || $round_no !~ /^[0-9]+$/) {
+        print "Error:Unusual ResultNo or RoundNo\n";
         return;
     }
 
     $upload->DBConnect();
     
+    $upload->DeleteSameResult("uploaded_checks", $result_no, $round_no);
+
     if (ConstData::EXE_DATA) {
         &UploadData($upload, ConstData::EXE_DATA_PROPER_NAME, "proper_names", "./output/data/proper_name.csv");
+        &UploadSkill($upload, $result_no, ConstData::EXE_DATA_SKILL_LIST, "skill_lists", "./output/data/skill_list_");
     }
     if (ConstData::EXE_CHARA) {
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME, "names", "./output/chara/name_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_NAME,              "names",               "./output/chara/name_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_SKILL,             "skills",              "./output/chara/skill_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_SKILL_CONCATENATE, "skill_concatenates",  "./output/chara/skill_concatenate_");
     }
-    print "result_no:$result_no,generate_no:$generate_no\n";
+        &UploadResult($upload, $result_no, $round_no, 1,                      "uploaded_checks",     "./output/etc/uploaded_check_");
+    print "result_no:$result_no,round_no:$round_no\n";
     return;
 }
 
@@ -75,6 +81,24 @@ sub UploadData {
 }
 
 #-----------------------------------#
+#       スキルデータをアップロード
+#-----------------------------------#
+#    引数｜アップロードオブジェクト
+#    　　　更新番号
+#    　　　アップロード定義
+#          テーブル名
+#          ファイル名
+##-----------------------------------#
+sub UploadSkill {
+    my ($upload, $result_no, $is_upload, $table_name, $file_name) = @_;
+
+    if($is_upload) {
+        $upload->DeleteSameResult($table_name, $result_no);
+        $upload->Upload($file_name . $result_no . ".csv", $table_name);
+    }
+}
+
+#-----------------------------------#
 #       更新結果データをアップロード
 #-----------------------------------#
 #    引数｜アップロードオブジェクト
@@ -85,10 +109,10 @@ sub UploadData {
 #          ファイル名
 ##-----------------------------------#
 sub UploadResult {
-    my ($upload, $result_no, $generate_no, $is_upload, $table_name, $file_name) = @_;
+    my ($upload, $result_no, $round_no, $is_upload, $table_name, $file_name) = @_;
 
     if($is_upload) {
-        $upload->DeleteSameResult($table_name, $result_no, $generate_no);
-        $upload->Upload($file_name . $result_no . "_" . $generate_no . ".csv", $table_name);
+        $upload->DeleteSameRound($table_name, $result_no, $round_no);
+        $upload->Upload($file_name . $result_no . "_" . $round_no . ".csv", $table_name);
     }
 }

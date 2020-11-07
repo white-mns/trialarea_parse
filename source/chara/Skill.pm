@@ -17,7 +17,7 @@ use source::lib::GetNode;
 #------------------------------------------------------------------#
 #    パッケージの定義
 #------------------------------------------------------------------#     
-package Name;
+package Skill;
 
 #-----------------------------------#
 #    コンストラクタ
@@ -37,25 +37,33 @@ sub Init(){
     my $self = shift;
     ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
 
-    $self->{CommonDatas}{NickName} = {};
-    
     #初期化
-    $self->{Datas}{Data}  = StoreData->new();
+    $self->{Datas}{Data}             = StoreData->new();
+    $self->{Datas}{SkillConcatenate} = StoreData->new();
+
     my $header_list = "";
    
     $header_list = [
                 "result_no",
                 "round_no",
-                "player_id",
                 "link_no",
-                "name",
-                "player",
+                "skill_id",
     ];
 
     $self->{Datas}{Data}->Init($header_list);
-    
+
+    $header_list = [
+                "result_no",
+                "round_no",
+                "link_no",
+                "skill_concatenate",
+    ];
+
+    $self->{Datas}{SkillConcatenate}->Init($header_list);
+
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/chara/name_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
+    $self->{Datas}{Data}->SetOutputName            ( "./output/chara/skill_"             . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
+    $self->{Datas}{SkillConcatenate}->SetOutputName( "./output/chara/skill_concatenate_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
     return;
 }
 
@@ -84,7 +92,7 @@ sub CrawlLinkNode{
 
     foreach my $a_node ( @$a_nodes) {
         if ($a_node->attr("name") && $a_node->attr("name") =~ /^[0-9]+$/) {
-            $self->GetNameData($a_node);
+            $self->GetSkillData($a_node);
         }
     }
 
@@ -96,25 +104,28 @@ sub CrawlLinkNode{
 #------------------------------------
 #    引数｜リンクノード
 #-----------------------------------#
-sub GetNameData{
+sub GetSkillData{
     my $self  = shift;
     my $a_node  = shift;
-    my ($player_id, $link_no, $name, $player) = (0, 0, "", "");
+    my $link_no = 0;
 
-    my @right_children = $a_node->right->content_list;
+    my $right_node = $a_node->right;
 
     $link_no = $a_node->attr("name");
-    $name =  $right_children[1]->as_text;
-    $player =  $right_children[2]->as_text;
-    $player =~ s/プレイヤー：//g;
+    
+    my $span_tooltip_nodes = &GetNode::GetNode_Tag_Attr("span", "data-toggle", "tooltip", \$right_node);
+    my $skill_concatenate = ",";
 
-    if ($player =~ / \[(\d+)\]/) {
-        $player_id = $1;
-        $player =~ s/ \[\d+\]//g;
+    foreach my $span_tooltip_node (@$span_tooltip_nodes) {
+        my $name = $span_tooltip_node->as_text;
+        my $skill_id = $self->{CommonDatas}{SkillList}->GetOrAddId(0, [$name, $self->{ResultNo}, -1, -1, "", 0, 0, 0, 0, 0, 0, 0, 0]);
+
+        $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_id)));
+
+        $skill_concatenate .= $name.",";
     }
 
-    $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $player_id, $link_no, $name, $player)));
-
+    $self->{Datas}{SkillConcatenate}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_concatenate)));
 
     return;
 }

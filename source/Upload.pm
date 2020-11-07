@@ -177,19 +177,36 @@ sub DeleteSameDate{
 
 #-----------------------------------#
 #
-#    同じ更新回のデータを削除する
+#    同じ大会のデータを削除する
 #
 #-----------------------------------#
 sub DeleteSameResult{
     my $self        = shift;
     my $table_name  = shift;
     my $result_no   = shift;
-    my $generate_no = shift;
-    
+
     $self->{DBI}->delete(
             table => $table_name,
             where => {result_no   => $result_no,}
-                      #generate_no => $generate_no,}
+        );
+    return;
+}
+
+#-----------------------------------#
+#
+#    同じラウンドのデータを削除する
+#
+#-----------------------------------#
+sub DeleteSameRound{
+    my $self        = shift;
+    my $table_name  = shift;
+    my $result_no   = shift;
+    my $round_no = shift;
+
+    $self->{DBI}->delete(
+            table => $table_name,
+            where => {result_no => $result_no,
+                      round_no  => $round_no,}
         );
     return;
 }
