@@ -58,6 +58,9 @@ sub Main {
         &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_SKILL,             "skills",              "./output/chara/skill_");
         &UploadResult($upload, $result_no, $round_no, ConstData::EXE_CHARA_SKILL_CONCATENATE, "skill_concatenates",  "./output/chara/skill_concatenate_");
     }
+    if (ConstData::EXE_MATCHING_LIST) {
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_MATCHING_MATCHING,       "matchings",           "./output/matching/matching_");
+    }
         &UploadResult($upload, $result_no, $round_no, 1,                      "uploaded_checks",     "./output/etc/uploaded_check_");
     print "result_no:$result_no,round_no:$round_no\n";
     return;
