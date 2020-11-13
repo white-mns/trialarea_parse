@@ -104,7 +104,10 @@ sub CrawlAction{
     my @actions = $content =~ /'msg':'.+?','wait':'\d+?','fontsize':'action'/g;
 
     foreach my $action (@actions) {
-        $self->GetUseSkillData($action, $battle_no, $left_pc_name_data, $right_pc_name_data);
+        if ($action =~ /'msg':'(.+?)'/) {
+            my $msg = $1;
+            $self->GetUseSkillData($msg, $battle_no, $left_pc_name_data, $right_pc_name_data);
+        }
     }
 
     $self->AddAllUseSkill($battle_no);
@@ -121,21 +124,20 @@ sub CrawlAction{
 #-----------------------------------#
 sub GetUseSkillData{
     my $self  = shift;
-    my $action  = shift;
+    my $msg  = shift;
     my $battle_no     = shift;
     my $left_pc_name_data  = shift;
     my $right_pc_name_data = shift;
 
-    my ($link_no, $user_name, $skill_name) = (0, "", "");
+    my ($link_no, $skill_name) = (0, "");
 
-    if ($action =~ /msg':'(.+)の(.+?)！','wait/) {
-        $user_name = $1;
+    if ($msg =~ /.+の(.+?)！$/) {
         
-        if ($action =~ /msg':'(.+?)の(.+?)<span class/) {
-            if ($action =~ /<span class="small">\((.+?)\)<\/span>/) { $skill_name = $1;}
+        if ($msg =~ /.+?の(.+?)<span class/) {
+            if ($msg =~ /<span class="small">\((.+?)\)<\/span>/) { $skill_name = $1;}
 
-        } elsif ($action =~ /msg':'(.+?)の(.+?)！','wait/) {
-            $skill_name = $2;
+        } elsif ($msg =~ /.+?の(.+?)！$/) {
+            $skill_name = $1;
             if ($skill_name eq "勝利") {return;}
 
         }
@@ -145,11 +147,11 @@ sub GetUseSkillData{
 
     $self->{AllUseSkill}{$skill_name} = 1;
 
-    if ($user_name eq $$left_pc_name_data[1]) {
+    if ($msg =~ /$$left_pc_name_data[1]/) {
         $self->{LeftUseSkill}{$skill_name} = 1;
     }
 
-    if ($user_name eq $$right_pc_name_data[1]) {
+    if ($msg =~ /$$right_pc_name_data[1]/) {
         $self->{RightUseSkill}{$skill_name} = 1;
     }
 
