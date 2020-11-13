@@ -169,7 +169,7 @@ sub AddAllUseSkill{
 
     my $all_use_skill = ",";
 
-    foreach my $skill_name ( keys(%{$self->{AllUseSkill}}) ) {
+    foreach my $skill_name (sort{$a cmp $b}(keys(%{$self->{AllUseSkill}}))) {
         $all_use_skill .= $skill_name.",";
     }
 
@@ -192,7 +192,7 @@ sub AddCharaUseSkill{
 
     my $chara_use_skill = ",";
 
-    foreach my $skill_name ( keys(%$use_skills) ) {
+    foreach my $skill_name (sort{$a cmp $b}(keys(%$use_skills))) {
         $chara_use_skill .= $skill_name.",";
     }
 
