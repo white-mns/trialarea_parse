@@ -26,5 +26,7 @@ use warnings;
         use constant EXE_CHARA_SKILL_CONCATENATE => 1;
     use constant EXE_MATCHING_LIST => 1;
         use constant EXE_MATCHING_MATCHING       => 1;
+    use constant EXE_BATTLE        => 1;
+        use constant EXE_BATTLE_ALL_USE_SKILL    => 1;
 
 1;

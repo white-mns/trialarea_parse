@@ -93,6 +93,11 @@ sub CrawlMatchingNode{
         if ($$a_nodes[2] && $$a_nodes[2]->attr("href") && $$a_nodes[2]->attr("href") =~ /battle\/(\d+)/) { $battle_no = $1;}
 
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $battle_no, $left_link_no, $right_link_no)));
+        
+        if ($battle_no > 0 && $self->{CommonDatas}{Battle}) {
+            print $battle_no."\n";
+            $self->{CommonDatas}{Battle}->Execute($battle_no, $left_link_no, $right_link_no);
+        }
     }
 
     return;

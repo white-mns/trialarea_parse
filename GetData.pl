@@ -11,6 +11,7 @@ require "./source/ProperName.pm";
 require "./source/Character.pm";
 require "./source/SkillList.pm";
 require "./source/MatchingList.pm";
+require "./source/Battle.pm";
 require "./source/UploadedCheck.pm";
 
 # パッケージの使用宣言    ---------------#
@@ -55,6 +56,7 @@ sub Main{
     push(@objects, ProperName->new()); #固有名詞読み込み・保持
     push(@objects, SkillList->new());  # スキルリスト読み込み・保持
                                       {push(@objects, UploadedCheck->new());} # データ更新状況チェック用データ作成
+    if (ConstData::EXE_BATTLE)        {push(@objects, Battle->new());}        # 戦闘読み込み
     if (ConstData::EXE_CHARA)         {push(@objects, Character->new());}     # キャラページ読み込み
     if (ConstData::EXE_MATCHING_LIST) {push(@objects, MatchingList->new());}  # 対戦組み合わせ読み込み
 
