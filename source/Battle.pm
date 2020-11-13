@@ -67,14 +67,14 @@ sub Init() {
 sub Execute{
     my $self          = shift;
     my $battle_no     = shift;
-    my $left_link_no  = shift;
-    my $right_link_no = shift;
+    my $left_pc_name_data  = shift;
+    my $right_pc_name_data = shift;
 
     if (!$battle_no) {return;}
 
     my $directory = './data/orig/battle/';
     
-    $self->ParsePage($directory . $battle_no . "_2" . ".html", $battle_no, $left_link_no, $right_link_no);
+    $self->ParsePage($directory . $battle_no . "_2" . ".html", $battle_no, $left_pc_name_data, $right_pc_name_data);
     
     return ;
 }
@@ -88,8 +88,8 @@ sub ParsePage{
     my $self        = shift;
     my $file_name   = shift;
     my $battle_no     = shift;
-    my $left_link_no  = shift;
-    my $right_link_no = shift;
+    my $left_pc_name_data  = shift;
+    my $right_pc_name_data = shift;
 
     #結果の読み込み
     my $content = "";
@@ -98,7 +98,7 @@ sub ParsePage{
     if (!$content) { return;}
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{UseSkill})) {$self->{DataHandlers}{UseSkill}->GetData($content, $battle_no, $left_link_no, $right_link_no)};
+    if (exists($self->{DataHandlers}{UseSkill})) {$self->{DataHandlers}{UseSkill}->GetData($content, $battle_no, $left_pc_name_data, $right_pc_name_data)};
 }
 
 #-----------------------------------#

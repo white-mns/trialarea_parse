@@ -28,5 +28,6 @@ use warnings;
         use constant EXE_MATCHING_MATCHING       => 1;
     use constant EXE_BATTLE        => 1;
         use constant EXE_BATTLE_ALL_USE_SKILL    => 1;
+        use constant EXE_BATTLE_CHARA_USE_SKILL  => 1;
 
 1;

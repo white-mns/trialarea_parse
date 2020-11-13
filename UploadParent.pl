@@ -64,6 +64,7 @@ sub Main {
     }
     if (ConstData::EXE_BATTLE) {
         &UploadResult($upload, $result_no, $round_no, ConstData::EXE_BATTLE_ALL_USE_SKILL,    "all_use_skills",      "./output/battle/all_use_skill_");
+        &UploadResult($upload, $result_no, $round_no, ConstData::EXE_BATTLE_CHARA_USE_SKILL,  "chara_use_skills",    "./output/battle/chara_use_skill_");
     }
         &UploadResult($upload, $result_no, $round_no, 1,                      "uploaded_checks",     "./output/etc/uploaded_check_");
     print "result_no:$result_no,round_no:$round_no\n";

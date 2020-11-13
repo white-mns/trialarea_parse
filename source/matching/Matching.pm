@@ -81,14 +81,22 @@ sub CrawlMatchingNode{
     my $self  = shift;
     my $div_nodes  = shift;
     my ($battle_no, $left_link_no, $right_link_no) = (0,0,0);
+    my ($left_pc_name, $right_pc_name) = ("","");
 
     foreach my $div_node ( @$div_nodes) {
         my $a_nodes = &GetNode::GetNode_Tag("a", \$div_node);
 
         if (!scalar(@$a_nodes)) {next;}
 
-        if ($$a_nodes[0] && $$a_nodes[0]->attr("href") && $$a_nodes[0]->attr("href") =~ /\#(\d+)/) { $left_link_no = $1;}
-        if ($$a_nodes[1] && $$a_nodes[1]->attr("href") && $$a_nodes[1]->attr("href") =~ /\#(\d+)/) { $right_link_no = $1;}
+        if ($$a_nodes[0] && $$a_nodes[0]->attr("href") && $$a_nodes[0]->attr("href") =~ /\#(\d+)/) {
+            $left_link_no = $1;
+            $left_pc_name = $$a_nodes[0]->as_text;
+        }
+
+        if ($$a_nodes[1] && $$a_nodes[1]->attr("href") && $$a_nodes[1]->attr("href") =~ /\#(\d+)/) {
+            $right_link_no = $1;
+            $right_pc_name = $$a_nodes[1]->as_text;
+        }
         
         if ($$a_nodes[2] && $$a_nodes[2]->attr("href") && $$a_nodes[2]->attr("href") =~ /battle\/(\d+)/) { $battle_no = $1;}
 
@@ -96,7 +104,7 @@ sub CrawlMatchingNode{
         
         if ($battle_no > 0 && $self->{CommonDatas}{Battle}) {
             print $battle_no."\n";
-            $self->{CommonDatas}{Battle}->Execute($battle_no, $left_link_no, $right_link_no);
+            $self->{CommonDatas}{Battle}->Execute($battle_no, [$left_link_no, $left_pc_name], [$right_link_no, $right_pc_name]);
         }
     }
 

@@ -38,7 +38,8 @@ sub Init(){
     ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
 
     #初期化
-    $self->{Datas}{AllUseSkill} = StoreData->new();
+    $self->{Datas}{AllUseSkill}   = StoreData->new();
+    $self->{Datas}{CharaUseSkill} = StoreData->new();
 
     my $header_list = "";
 
@@ -51,8 +52,19 @@ sub Init(){
 
     $self->{Datas}{AllUseSkill}->Init($header_list);
 
+    $header_list = [
+                "result_no",
+                "round_no",
+                "battle_no",
+                "link_no",
+                "skill_concatenate",
+    ];
+
+    $self->{Datas}{CharaUseSkill}->Init($header_list);
+
     #出力ファイル設定
-    $self->{Datas}{AllUseSkill}->SetOutputName( "./output/battle/all_use_skill_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
+    $self->{Datas}{AllUseSkill}->  SetOutputName( "./output/battle/all_use_skill_"   . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
+    $self->{Datas}{CharaUseSkill}->SetOutputName( "./output/battle/chara_use_skill_" . $self->{ResultNo} . "_" . $self->{RoundNo} . ".csv" );
     return;
 }
 
@@ -65,10 +77,10 @@ sub GetData{
     my $self = shift;
     my $content = shift;
     my $battle_no     = shift;
-    my $left_link_no  = shift;
-    my $right_link_no = shift;
+    my $left_pc_name_data  = shift;
+    my $right_pc_name_data = shift;
 
-    $self->CrawlAction($content, $battle_no, $left_link_no, $right_link_no);
+    $self->CrawlAction($content, $battle_no, $left_pc_name_data, $right_pc_name_data);
 
     return;
 }
@@ -82,18 +94,22 @@ sub CrawlAction{
     my $self  = shift;
     my $content  = shift;
     my $battle_no     = shift;
-    my $left_link_no  = shift;
-    my $right_link_no = shift;
+    my $left_pc_name_data  = shift;
+    my $right_pc_name_data = shift;
 
-    $self->{AllUseSkill} = {};
+    $self->{AllUseSkill}   = {};
+    $self->{LeftUseSkill}  = {};
+    $self->{RightUseSkill} = {};
 
     my @actions = $content =~ /'msg':'.+?','wait':'\d+?','fontsize':'action'/g;
 
     foreach my $action (@actions) {
-        $self->GetUseSkillData($action, $battle_no, $left_link_no, $right_link_no);
+        $self->GetUseSkillData($action, $battle_no, $left_pc_name_data, $right_pc_name_data);
     }
 
     $self->AddAllUseSkill($battle_no);
+    $self->AddCharaUseSkill($battle_no, $$left_pc_name_data[0],  $self->{LeftUseSkill});
+    $self->AddCharaUseSkill($battle_no, $$right_pc_name_data[0], $self->{RightUseSkill});
 
     return;
 }
@@ -107,13 +123,13 @@ sub GetUseSkillData{
     my $self  = shift;
     my $action  = shift;
     my $battle_no     = shift;
-    my $left_link_no  = shift;
-    my $right_link_no = shift;
+    my $left_pc_name_data  = shift;
+    my $right_pc_name_data = shift;
 
-    my ($link_no, $skill_name) = (0, "");
+    my ($link_no, $user_name, $skill_name) = (0, "", "");
 
     if ($action =~ /msg':'(.+)の(.+?)！','wait/) {
-        my $user_name = $1;
+        $user_name = $1;
         
         if ($action =~ /msg':'(.+?)の(.+?)<span class/) {
             if ($action =~ /<span class="small">\((.+?)\)<\/span>/) { $skill_name = $1;}
@@ -128,6 +144,14 @@ sub GetUseSkillData{
     if (!$skill_name || $skill_name eq "") {return;}
 
     $self->{AllUseSkill}{$skill_name} = 1;
+
+    if ($user_name eq $$left_pc_name_data[1]) {
+        $self->{LeftUseSkill}{$skill_name} = 1;
+    }
+
+    if ($user_name eq $$right_pc_name_data[1]) {
+        $self->{RightUseSkill}{$skill_name} = 1;
+    }
 
     return;
 }
@@ -151,6 +175,30 @@ sub AddAllUseSkill{
 
     return;
 }
+
+#-----------------------------------#
+#    キャラクター使用スキルの記録
+#------------------------------------
+#    引数｜キャラクター番号
+#    　　　使用スキルのハッシュ配列
+#-----------------------------------#
+sub AddCharaUseSkill{
+    my $self  = shift;
+    my $battle_no   = shift;
+    my $link_no     = shift;
+    my $use_skills  = shift;
+
+    my $chara_use_skill = ",";
+
+    foreach my $skill_name ( keys(%$use_skills) ) {
+        $chara_use_skill .= $skill_name.",";
+    }
+
+    $self->{Datas}{CharaUseSkill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $battle_no, $link_no, $chara_use_skill)));
+
+    return;
+}
+
 
 #-----------------------------------#
 #    出力
