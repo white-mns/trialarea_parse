@@ -138,6 +138,14 @@ sub GetUseSkillData{
 
         } elsif ($msg =~ /.+?の(.+?)！$/) {
             $skill_name = $1;
+
+            my @no_splits = split(/の/, $msg);
+            if (scalar(@no_splits) > 2) {
+                my $splits_length = scalar(@no_splits);
+                $skill_name = $no_splits[$splits_length - 1];
+                $skill_name =~ s/！//;
+            }
+
             if ($skill_name eq "勝利") {return;}
 
         }
