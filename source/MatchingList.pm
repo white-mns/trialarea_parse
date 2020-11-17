@@ -1,5 +1,5 @@
 #===================================================================
-#        キャラステータス解析パッケージ
+#        対戦組み合わせ一覧解析パッケージ
 #-------------------------------------------------------------------
 #            (C) 2020 @white_mns
 #===================================================================
@@ -16,15 +16,14 @@ use source::lib::GetNode;
 require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
 
-require "./source/chara/Name.pm";
-require "./source/chara/Skill.pm";
+require "./source/matching/Matching.pm";
 
 use ConstData;        #定数呼び出し
 
 #------------------------------------------------------------------#
 #    パッケージの定義
 #------------------------------------------------------------------#
-package Character;
+package MatchingList;
 
 #-----------------------------------#
 #    コンストラクタ
@@ -48,8 +47,7 @@ sub Init() {
     $self->{ResultAddrNo} = $self->{ResultNo} + 1;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)  { $self->{DataHandlers}{Name}  = Name->new();}
-    if (ConstData::EXE_CHARA_SKILL) { $self->{DataHandlers}{Skill} = Skill->new();}
+    if (ConstData::EXE_MATCHING_MATCHING) { $self->{DataHandlers}{Matching}  = Matching->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -67,11 +65,11 @@ sub Init() {
 sub Execute{
     my $self        = shift;
 
-    print "read character files...\n";
+    print "read matching files...\n";
 
     my $start = 1;
     my $end   = 0;
-    my $directory = './data/orig/result_charalist/';
+    my $directory = './data/orig/result_battlelist/';
     
     $self->ParsePage($directory . $self->{ResultAddrNo} . '_' . $self->{RoundNo} . ".html");
     
@@ -97,11 +95,10 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $a_nodes = &GetNode::GetNode_Tag("a", \$tree);
+    my $div_nodes = &GetNode::GetNode_Tag_Attr("div", "class", "border section", \$tree);
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name}))  {$self->{DataHandlers}{Name}->GetData($a_nodes)};
-    if (exists($self->{DataHandlers}{Skill})) {$self->{DataHandlers}{Skill}->GetData($a_nodes)};
+    if (exists($self->{DataHandlers}{Matching})) {$self->{DataHandlers}{Matching}->GetData($div_nodes)};
 
     $tree = $tree->delete;
 }
