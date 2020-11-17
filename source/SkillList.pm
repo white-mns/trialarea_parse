@@ -47,6 +47,7 @@ sub Init() {
     $self->{ResultAddrNo} = $self->{ResultNo} + 1;
 
     #インスタンス作成
+    $self->{CommonDatas}{isAwakeSkill} = {};
     $self->{DataHandlers}{SkillList} = StoreProperData->new();
 
     #他パッケージへの引き渡し用インスタンス
@@ -188,6 +189,8 @@ sub GetSkillData{
     }
 
     $self->{CommonDatas}{SkillList}->GetOrAddId(1, [$name, $self->{ResultNo}, $skill_type, $ap, $text, $is_physics, $is_fire, $is_aqua, $is_wind, $is_quake, $is_light, $is_dark, $is_poison]);
+    
+    if ($skill_type == 2) { $self->{CommonDatas}{isAwakeSkill}{$name} = 1; }
 
     return;
 }
