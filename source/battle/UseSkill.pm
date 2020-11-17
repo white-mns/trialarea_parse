@@ -58,6 +58,7 @@ sub Init(){
                 "battle_no",
                 "link_no",
                 "skill_concatenate",
+                "skill_concatenate_ex",
     ];
 
     $self->{Datas}{CharaUseSkill}->Init($header_list);
@@ -156,11 +157,19 @@ sub GetUseSkillData{
     $self->{AllUseSkill}{$skill_name} = 1;
 
     if ($msg =~ /$$left_pc_name_data[1]/) {
-        $self->{LeftUseSkill}{$skill_name} = 1;
+        if (exists($self->{LeftUseSkill}{$skill_name})) {
+            $self->{LeftUseSkill}{$skill_name} += 1;
+        } else {
+            $self->{LeftUseSkill}{$skill_name} = 1;
+        }
     }
 
     if ($msg =~ /$$right_pc_name_data[1]/) {
-        $self->{RightUseSkill}{$skill_name} = 1;
+        if (exists($self->{RightUseSkill}{$skill_name})) {
+            $self->{RightUseSkill}{$skill_name} += 1;
+        } else {
+            $self->{RightUseSkill}{$skill_name} = 1;
+        }
     }
 
     return;
@@ -199,12 +208,14 @@ sub AddCharaUseSkill{
     my $use_skills  = shift;
 
     my $chara_use_skill = ",";
+    my $chara_use_skill_ex = ",";
 
     foreach my $skill_name (sort{$a cmp $b}(keys(%$use_skills))) {
         $chara_use_skill .= $skill_name.",";
+        $chara_use_skill_ex .= $skill_name . " (" . $$use_skills{$skill_name} . "回),";
     }
 
-    $self->{Datas}{CharaUseSkill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $battle_no, $link_no, $chara_use_skill)));
+    $self->{Datas}{CharaUseSkill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $battle_no, $link_no, $chara_use_skill, $chara_use_skill_ex)));
 
     return;
 }
