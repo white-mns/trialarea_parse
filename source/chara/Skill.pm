@@ -115,17 +115,21 @@ sub GetSkillData{
     $link_no = $a_node->attr("name");
     
     $self->{CommonDatas}{isLearnedSkill}{$link_no} = {};
-    my $span_tooltip_nodes = &GetNode::GetNode_Tag_Attr("span", "data-toggle", "tooltip", \$right_node);
+    my $span_nodes = &GetNode::GetNode_Tag("span", \$right_node);
     my $skill_concatenate = ",";
 
-    foreach my $span_tooltip_node (@$span_tooltip_nodes) {
-        my $name = $span_tooltip_node->as_text;
+    foreach my $span_node (@$span_nodes) {
+        my $name = $span_node->as_text;
+
+        $skill_concatenate .= $name.",";
+
+        if ($name =~ /非公開/) { next; }
+
         my $skill_id = $self->{CommonDatas}{SkillList}->GetOrAddId(0, [$name, $self->{ResultNo}, -1, -1, "", 0, 0, 0, 0, 0, 0, 0, 0]);
 
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_id)));
 
         $self->{CommonDatas}{isLearnedSkill}{$link_no}{$name} = 1;
-        $skill_concatenate .= $name.",";
     }
 
     $self->{Datas}{SkillConcatenate}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_concatenate)));
