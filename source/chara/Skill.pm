@@ -38,6 +38,7 @@ sub Init(){
     ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
 
     #初期化
+    $self->{CommonDatas}{isLearnedSkill} = {};
     $self->{Datas}{Data}             = StoreData->new();
     $self->{Datas}{SkillConcatenate} = StoreData->new();
 
@@ -113,6 +114,7 @@ sub GetSkillData{
 
     $link_no = $a_node->attr("name");
     
+    $self->{CommonDatas}{isLearnedSkill}{$link_no} = {};
     my $span_tooltip_nodes = &GetNode::GetNode_Tag_Attr("span", "data-toggle", "tooltip", \$right_node);
     my $skill_concatenate = ",";
 
@@ -122,6 +124,7 @@ sub GetSkillData{
 
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $link_no, $skill_id)));
 
+        $self->{CommonDatas}{isLearnedSkill}{$link_no}{$name} = 1;
         $skill_concatenate .= $name.",";
     }
 

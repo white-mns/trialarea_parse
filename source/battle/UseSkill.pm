@@ -59,6 +59,7 @@ sub Init(){
                 "link_no",
                 "skill_concatenate",
                 "skill_concatenate_ex",
+                "seclusion_skill_id",
     ];
 
     $self->{Datas}{CharaUseSkill}->Init($header_list);
@@ -209,13 +210,18 @@ sub AddCharaUseSkill{
 
     my $chara_use_skill = ",";
     my $chara_use_skill_ex = ",";
+    my $seclusion_skill_id = 0;
 
     foreach my $skill_name (sort{$a cmp $b}(keys(%$use_skills))) {
         $chara_use_skill .= $skill_name.",";
+        if (!exists($self->{CommonDatas}{isLearnedSkill}{$link_no}{$skill_name}) && !exists($self->{CommonDatas}{isAwakeSkill}{$skill_name})) {
+            $chara_use_skill_ex .=  "!"; # 習得スキルにないものを使ったら非公開フラグ追加
+            $seclusion_skill_id = $self->{CommonDatas}{SkillList}->GetOrAddId(0, [$skill_name, $self->{ResultNo}, -1, -1, "", 0, 0, 0, 0, 0, 0, 0, 0]);
+        }
         $chara_use_skill_ex .= $skill_name . " (" . $$use_skills{$skill_name} . "回),";
     }
 
-    $self->{Datas}{CharaUseSkill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $battle_no, $link_no, $chara_use_skill, $chara_use_skill_ex)));
+    $self->{Datas}{CharaUseSkill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{RoundNo}, $battle_no, $link_no, $chara_use_skill, $chara_use_skill_ex, $seclusion_skill_id)));
 
     return;
 }
