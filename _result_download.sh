@@ -6,6 +6,7 @@ cd `dirname $0`	#解析コードのあるディレクトリで作業をする
 #------------------------------------------------------------------
 # 大会番号、ラウンド番号の定義確認、設定
 
+DOMAIN="https://gameokiba.com/trialandscheme"
 RESULT_NO=$1
 RESULT_ADDR_NO=$(($1 + 1))
 ROUND_NO=$2
@@ -18,15 +19,15 @@ mkdir ./result_battlelist
 mkdir ./rule
 mkdir ./rule/skill_list
 
-wget -O ./result/${RESULT_ADDR_NO}.html http://133.130.112.98/trialarea/result/${RESULT_ADDR_NO}
+wget -O ./result/${RESULT_ADDR_NO}.html ${DOMAIN}/result/${RESULT_ADDR_NO}
 sleep 2
-wget -O ./result_charalist/${RESULT_ADDR_NO}_${ROUND_NO}.html http://133.130.112.98/trialarea/result_charalist/${RESULT_ADDR_NO}/${ROUND_NO}
+wget -O ./result_charalist/${RESULT_ADDR_NO}_${ROUND_NO}.html ${DOMAIN}/result_charalist/${RESULT_ADDR_NO}/${ROUND_NO}
 sleep 2
-wget -O ./result_battlelist/${RESULT_ADDR_NO}_${ROUND_NO}.html http://133.130.112.98/trialarea/result_battlelist/${RESULT_ADDR_NO}/${ROUND_NO}
+wget -O ./result_battlelist/${RESULT_ADDR_NO}_${ROUND_NO}.html ${DOMAIN}/result_battlelist/${RESULT_ADDR_NO}/${ROUND_NO}
 sleep 2
 
 if [ ! -s ./rule/skill_list/${RESULT_ADDR_NO}.html ] && [ ! -s ./battle/${RESULT_ADDR_NO}.html.gz ]; then
-    wget -O ./rule/skill_list/${RESULT_ADDR_NO}.html http://133.130.112.98/trialarea/rule/skill_list
+    wget -O ./rule/skill_list/${RESULT_ADDR_NO}.html ${DOMAIN}/rule/skill_list
     sleep 2
     break
 fi
@@ -42,7 +43,7 @@ for ((BATTLE_NO=1;BATTLE_NO <= 2000;BATTLE_NO++)) {
             break
         fi
 
-        wget -O ./battle/${BATTLE_NO}_1.html http://133.130.112.98/trialarea/battle/${BATTLE_NO}/1
+        wget -O ./battle/${BATTLE_NO}_1.html ${DOMAIN}/battle/${BATTLE_NO}/1
 
         if grep -q "登録・ログイン" ./battle/${BATTLE_NO}_1.html; then
             WGET_END=1
@@ -72,7 +73,7 @@ for ((BATTLE_NO=1;BATTLE_NO <= 2000;BATTLE_NO++)) {
             break
         fi
 
-        wget -O ./battle/${BATTLE_NO}_2.html http://133.130.112.98/trialarea/battle/${BATTLE_NO}/2
+        wget -O ./battle/${BATTLE_NO}_2.html ${DOMAIN}/battle/${BATTLE_NO}/2
 
         if grep -q "登録・ログイン" ./battle/${BATTLE_NO}_2.html; then
             WGET_END=1
