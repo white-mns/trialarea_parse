@@ -8,7 +8,7 @@ cd `dirname $0`	#解析コードのあるディレクトリで作業をする
 
 DOMAIN="https://gameokiba.com/trialandscheme"
 RESULT_NO=$1
-RESULT_ADDR_NO=$(($1 + 1))
+RESULT_ADDR_NO=$1
 ROUND_NO=$2
 
 cd ./data/orig/
@@ -16,20 +16,20 @@ cd ./data/orig/
 mkdir ./result
 mkdir ./result_charalist
 mkdir ./result_battlelist
+mkdir ./battle
 mkdir ./rule
 mkdir ./rule/skill_list
 
-wget -O ./result/${RESULT_ADDR_NO}.html ${DOMAIN}/result/${RESULT_ADDR_NO}
+wget --no-check-certificate -O ./result/${RESULT_ADDR_NO}.html ${DOMAIN}/result/${RESULT_ADDR_NO}
 sleep 2
-wget -O ./result_charalist/${RESULT_ADDR_NO}_${ROUND_NO}.html ${DOMAIN}/result_charalist/${RESULT_ADDR_NO}/${ROUND_NO}
+wget --no-check-certificate -O ./result_charalist/${RESULT_ADDR_NO}_${ROUND_NO}.html ${DOMAIN}/result_charalist/${RESULT_ADDR_NO}/${ROUND_NO}
 sleep 2
-wget -O ./result_battlelist/${RESULT_ADDR_NO}_${ROUND_NO}.html ${DOMAIN}/result_battlelist/${RESULT_ADDR_NO}/${ROUND_NO}
+wget --no-check-certificate -O ./result_battlelist/${RESULT_ADDR_NO}_${ROUND_NO}.html ${DOMAIN}/result_battlelist/${RESULT_ADDR_NO}/${ROUND_NO}
 sleep 2
 
 if [ ! -s ./rule/skill_list/${RESULT_ADDR_NO}.html ] && [ ! -s ./battle/${RESULT_ADDR_NO}.html.gz ]; then
-    wget -O ./rule/skill_list/${RESULT_ADDR_NO}.html ${DOMAIN}/rule/skill_list
+    wget --no-check-certificate -O ./rule/skill_list/${RESULT_ADDR_NO}.html ${DOMAIN}/rule/skill_list
     sleep 2
-    break
 fi
 
 WGET_END=0
@@ -43,9 +43,15 @@ for ((BATTLE_NO=1;BATTLE_NO <= 2000;BATTLE_NO++)) {
             break
         fi
 
-        wget -O ./battle/${BATTLE_NO}_1.html ${DOMAIN}/battle/${BATTLE_NO}/1
+        wget --no-check-certificate -O ./battle/${BATTLE_NO}_1.html ${DOMAIN}/battle/${BATTLE_NO}/1
 
         if grep -q "登録・ログイン" ./battle/${BATTLE_NO}_1.html; then
+            WGET_END=1
+            rm ./battle/${BATTLE_NO}_1.html
+            break
+        fi
+
+        if grep -q "Not Found" ./battle/${BATTLE_NO}_1.html; then
             WGET_END=1
             rm ./battle/${BATTLE_NO}_1.html
             break
@@ -73,9 +79,15 @@ for ((BATTLE_NO=1;BATTLE_NO <= 2000;BATTLE_NO++)) {
             break
         fi
 
-        wget -O ./battle/${BATTLE_NO}_2.html ${DOMAIN}/battle/${BATTLE_NO}/2
+        wget --no-check-certificate -O ./battle/${BATTLE_NO}_2.html ${DOMAIN}/battle/${BATTLE_NO}/2
 
         if grep -q "登録・ログイン" ./battle/${BATTLE_NO}_2.html; then
+            WGET_END=1
+            rm ./battle/${BATTLE_NO}_2.html
+            break
+        fi
+
+        if grep -q "Not Found" ./battle/${BATTLE_NO}_2.html; then
             WGET_END=1
             rm ./battle/${BATTLE_NO}_2.html
             break

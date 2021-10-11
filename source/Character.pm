@@ -45,7 +45,7 @@ sub new {
 sub Init() {
     my $self = shift;
     ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
-    $self->{ResultAddrNo} = $self->{ResultNo} + 1;
+    $self->{ResultAddrNo} = $self->{ResultNo};
 
     #インスタンス作成
     if (ConstData::EXE_CHARA_NAME)  { $self->{DataHandlers}{Name}  = Name->new();}

@@ -43,7 +43,7 @@ sub new {
 sub Init() {
     my $self = shift;
     ($self->{ResultNo}, $self->{RoundNo}, $self->{CommonDatas}) = @_;
-    $self->{ResultAddrNo} = $self->{ResultNo} + 1;
+    $self->{ResultAddrNo} = $self->{ResultNo};
     
     #他パッケージへの引き渡し用
     $self->{CommonDatas}{Battle} = $self;

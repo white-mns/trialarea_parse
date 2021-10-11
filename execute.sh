@@ -15,7 +15,7 @@ fi
 
 EXECUTE_WGET=$1
 RESULT_NO=$2
-RESULT_ADDR_NO=$(($2 + 1))
+RESULT_ADDR_NO=$1
 ROUND_NO=$3
 
 #------------------------------------------------------------------
