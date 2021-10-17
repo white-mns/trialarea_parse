@@ -103,7 +103,7 @@ sub CrawlAction{
     $self->{LeftUseSkill}  = {};
     $self->{RightUseSkill} = {};
 
-    my @actions = $content =~ /'msg':'.+?','wait':'\d+?','fontsize':'action'/g;
+    my @actions = $content =~ /'msg':'.+?','fontsize':'action'/g;
 
     foreach my $action (@actions) {
         if ($action =~ /'msg':'(.+?)'/) {
