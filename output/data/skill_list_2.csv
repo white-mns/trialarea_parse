@@ -106,3 +106,6 @@ skill_id	name	result_no	skill_type	ap	text	is_physics	is_fire	is_aqua	is_wind	is
 105	同化	2	0	-1	AP2	0	0	0	0	0	0	0	0
 106	フラッドゾル	2	0	-1	AP5	0	0	0	0	0	0	0	0
 107	再試行	2	0	-1	AP1	0	0	0	0	0	0	0	0
+214	奥義『多重防護』	2	-1	-1		0	0	0	0	0	0	0	0
+215	奥義『拡大成長』	2	-1	-1		0	0	0	0	0	0	0	0
+216	奥義『機先制圧』	2	-1	-1		0	0	0	0	0	0	0	0
