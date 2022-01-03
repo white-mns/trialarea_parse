@@ -75,14 +75,14 @@ sub Init() {
     $output_file = "./output/data/". "skill_list_" . $self->{ResultNo} . ".csv";
     $self->{DataHandlers}{SkillList}->Init($header_list, $output_file, [" ", 0, -1, -1, " ", 0, 0, 0, 0, 0, 0, 0, 0]);
     $self->{DataHandlers}{SkillList}->Init($header_list, $output_file," ");
-    
+
     return;
 }
 
 #-----------------------------------#
 #    圧縮結果から詳細データファイルを抽出
 #-----------------------------------#
-#    
+#
 #-----------------------------------#
 sub Execute{
     my $self        = shift;
@@ -90,9 +90,9 @@ sub Execute{
     print "read skill files...\n";
 
     my $directory = './data/orig/rule/skill_list/';
-    
+
     $self->ParsePage($directory . $self->{ResultAddrNo} . ".html");
-    
+
     return ;
 }
 #-----------------------------------#
@@ -159,7 +159,7 @@ sub GetSkillData{
     $name = $div_node->attr("data-name");
 
     my $ap_node = $node_children[1];
-    my $text_node = (scalar(@node_children) > 3) ? $node_children[2] : $node_children[1];
+    my $text_node = (scalar(@node_children) > 4) ? $node_children[3] : $node_children[1];
 
     if ($ap_node->as_text =~ /^AP(\d+)/) {
         $ap = $1;
@@ -189,7 +189,7 @@ sub GetSkillData{
     }
 
     $self->{CommonDatas}{SkillList}->GetOrAddId(1, [$name, $self->{ResultNo}, $skill_type, $ap, $text, $is_physics, $is_fire, $is_aqua, $is_wind, $is_quake, $is_light, $is_dark, $is_poison]);
-    
+
     if ($skill_type == 2) { $self->{CommonDatas}{isAwakeSkill}{$name} = 1; }
 
     return;
