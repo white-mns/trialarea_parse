@@ -5,7 +5,7 @@
 #===================================================================
 
 
-# パッケージの使用宣言    ---------------#   
+# パッケージの使用宣言    ---------------#
 use strict;
 use warnings;
 require "./source/lib/Store_Data.pm";
@@ -16,7 +16,7 @@ use source::lib::GetNode;
 
 #------------------------------------------------------------------#
 #    パッケージの定義
-#------------------------------------------------------------------#     
+#------------------------------------------------------------------#
 package UseSkill;
 
 #-----------------------------------#
@@ -24,7 +24,7 @@ package UseSkill;
 #-----------------------------------#
 sub new {
   my $class = shift;
-  
+
   bless {
         Datas => {},
   }, $class;
@@ -134,7 +134,7 @@ sub GetUseSkillData{
     my ($link_no, $skill_name) = (0, "");
 
     if ($msg =~ /.+の(.+?)！$/) {
-        
+
         if ($msg =~ /.+?の(.+?)<span class/) {
             if ($msg =~ /<span class="small">\((.+?)\)<\/span>/) { $skill_name = $1;}
 
@@ -152,8 +152,11 @@ sub GetUseSkillData{
 
         }
     }
-    
+
     if (!$skill_name || $skill_name eq "") {return;}
+
+    $skill_name =~ s/奥義『//;
+    $skill_name =~ s/』//;
 
     $self->{AllUseSkill}{$skill_name} = 1;
 
@@ -234,7 +237,7 @@ sub AddCharaUseSkill{
 #-----------------------------------#
 sub Output(){
     my $self = shift;
-    
+
     foreach my $object( values %{ $self->{Datas} } ) {
         $object->Output();
     }

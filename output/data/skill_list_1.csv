@@ -107,3 +107,5 @@ skill_id	name	result_no	skill_type	ap	text	is_physics	is_fire	is_aqua	is_wind	is
 209	奥義『超過治癒』	1	-1	-1		0	0	0	0	0	0	0	0
 210	奥義『天衣無縫』	1	-1	-1		0	0	0	0	0	0	0	0
 211	奥義『多重防護』	1	-1	-1		0	0	0	0	0	0	0	0
+216	奥義『拡大成長』	1	-1	-1		0	0	0	0	0	0	0	0
+217	奥義『終端天撃』	1	-1	-1		0	0	0	0	0	0	0	0

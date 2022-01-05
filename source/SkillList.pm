@@ -62,6 +62,7 @@ sub Init() {
                 "result_no",
                 "skill_type",
                 "ap",
+                "priority",
                 "text",
                 "is_physics",
                 "is_fire",
@@ -73,16 +74,16 @@ sub Init() {
                 "is_poison",
     ];
     $output_file = "./output/data/". "skill_list_" . $self->{ResultNo} . ".csv";
-    $self->{DataHandlers}{SkillList}->Init($header_list, $output_file, [" ", 0, -1, -1, " ", 0, 0, 0, 0, 0, 0, 0, 0]);
+    $self->{DataHandlers}{SkillList}->Init($header_list, $output_file, [" ", 0, -1, -9999, -9999, " ", 0, 0, 0, 0, 0, 0, 0, 0]);
     $self->{DataHandlers}{SkillList}->Init($header_list, $output_file," ");
-    
+
     return;
 }
 
 #-----------------------------------#
 #    圧縮結果から詳細データファイルを抽出
 #-----------------------------------#
-#    
+#
 #-----------------------------------#
 sub Execute{
     my $self        = shift;
@@ -90,9 +91,9 @@ sub Execute{
     print "read skill files...\n";
 
     my $directory = './data/orig/rule/skill_list/';
-    
+
     $self->ParsePage($directory . $self->{ResultAddrNo} . ".html");
-    
+
     return ;
 }
 #-----------------------------------#
@@ -153,21 +154,17 @@ sub GetSkillData{
     my $self  = shift;
     my $div_node  = shift;
     my $skill_type  = shift;
-    my ($name, $ap, $text, $is_physics, $is_fire, $is_aqua, $is_wind, $is_quake, $is_light, $is_dark, $is_poison) = ("", -1, "", 0, 0, 0, 0, 0, 0, 0, 0);
+    my ($name, $ap, $priority, $text, $is_physics, $is_fire, $is_aqua, $is_wind, $is_quake, $is_light, $is_dark, $is_poison) = ("", -9999, -9999, "", 0, 0, 0, 0, 0, 0, 0, 0);
     my @node_children = $div_node->content_list;
 
     $name = $div_node->attr("data-name");
 
-    my $ap_node = $node_children[1];
-    my $text_node = (scalar(@node_children) > 3) ? $node_children[2] : $node_children[1];
+    my $ap_node = $node_children[2];
+    my $text_node = (scalar(@node_children) > 4) ? $node_children[3] : $node_children[1];
 
-    if ($ap_node->as_text =~ /^AP(\d+)/) {
-        $ap = $1;
-    }
-
-    if ($text_node =~ /HASH/) {
-        $text = $text_node->as_text;
-    }
+    if ($ap_node =~ /HASH/ && $ap_node->as_text =~ /^AP(\d+)/) {$ap = $1;}
+    if ($ap_node =~ /HASH/ && $ap_node->as_text =~ /優先度([-\d]+)/) {$priority = $1;}
+    if ($text_node =~ /HASH/) {$text = $text_node->as_text;}
 
     my @elements = (["物理", \$is_physics], ["火", \$is_fire], ["水", \$is_aqua], ["風", \$is_wind], ["地", \$is_quake], ["光", \$is_light], ["闇", \$is_dark]);
 
@@ -181,16 +178,12 @@ sub GetSkillData{
         }
     }
 
-    if ($text =~ /相手の\[毒\]Lv\+/) {
-        $is_poison = 1;
-    }
-    if ($name eq "ダーティクロー") {
-        $is_poison = 1;
-    }
+    if ($text =~ /相手の\[毒\]Lv\+/) {$is_poison = 1;}
+    if ($name eq "ダーティクロー") {$is_poison = 1;}
 
-    $self->{CommonDatas}{SkillList}->GetOrAddId(1, [$name, $self->{ResultNo}, $skill_type, $ap, $text, $is_physics, $is_fire, $is_aqua, $is_wind, $is_quake, $is_light, $is_dark, $is_poison]);
-    
-    if ($skill_type == 2) { $self->{CommonDatas}{isAwakeSkill}{$name} = 1; }
+    $self->{CommonDatas}{SkillList}->GetOrAddId(1, [$name, $self->{ResultNo}, $skill_type, $ap, $priority, $text, $is_physics, $is_fire, $is_aqua, $is_wind, $is_quake, $is_light, $is_dark, $is_poison]);
+
+    if ($skill_type == 2) {$self->{CommonDatas}{isAwakeSkill}{$name} = 1;}
 
     return;
 }
