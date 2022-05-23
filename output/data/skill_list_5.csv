@@ -66,3 +66,4 @@ skill_id	name	result_no	skill_type	ap	priority	text	is_physics	is_fire	is_aqua	i
 128	氷雨	5	-1	-1		0	0	0	0	0	0	0	0
 129	時間停止	5	-1	-1		0	0	0	0	0	0	0	0
 130	ブルートフォース	5	-1	-1		0	0	0	0	0	0	0	0
+134	ヒール	5	-1	-1		0	0	0	0	0	0	0	0
